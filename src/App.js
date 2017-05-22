@@ -10,7 +10,6 @@ class App extends Component {
           <h1>Vote Note</h1>
         </div>
         <NameForm />
-        <p id="output"></p>
       </div>
     );
   }
