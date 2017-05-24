@@ -5,10 +5,13 @@ class NameForm extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {value: '', output: ''};
+    this.state = {value: '', output: '', errorText: ''};
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.zipReg = function(input){
+      return /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(input);
+    }
 
     this.ajaxTest = function(zip){
       request.get('https://congress.api.sunlightfoundation.com/districts/locate?zip='+zip)
@@ -29,9 +32,15 @@ class NameForm extends Component {
   }
 
   handleSubmit(event) {
-    this.ajaxTest(this.state.value);
     event.preventDefault();
-    this.setState({value: ''});
+    if(this.zipReg(this.state.value)){
+      this.ajaxTest(this.state.value);
+      this.setState({value: ''});
+    }
+    else {
+      this.setState({errorText: 'Invalid ZIP Code'});
+      this.setState({output: this.state.errorText})
+    }
   }
 
 
