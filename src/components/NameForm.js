@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+var request = require('superagent');
 
 class NameForm extends Component {
 
@@ -8,6 +9,19 @@ class NameForm extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.ajaxTest = function(zip){
+      request.get('https://congress.api.sunlightfoundation.com/districts/locate?zip='+zip)
+        .end((error, response) => {
+          if (!error && response) {
+            this.setState({output: response.body.results[0].state})
+            console.log(response.body.results)
+          } else {
+            console.log('There was an error fetching your congressman', error);
+          }
+        }
+      );
+    }
   }
 
   handleChange(event) {
@@ -15,10 +29,12 @@ class NameForm extends Component {
   }
 
   handleSubmit(event) {
+    this.ajaxTest(this.state.value);
     event.preventDefault();
-    console.log(this.state.name);
-    this.setState({output : this.state.value});
+    this.setState({value: ''});
   }
+
+
 
   render() {
     return (
